@@ -4,7 +4,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Text.Json;
 
 namespace RandomQuoteBot
 {
@@ -13,14 +12,10 @@ namespace RandomQuoteBot
 	{
 
 		private readonly ITableServices _tableServices;
-		private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-		public GetQuote(
-			ITableServices tableServices,
-			JsonSerializerOptions jsonSerializerOptions)
+		public GetQuote(ITableServices tableServices)
 		{
 			_tableServices = tableServices;
-			_jsonSerializerOptions = jsonSerializerOptions;
 		}
 
 		[FunctionName("GetQuote")]

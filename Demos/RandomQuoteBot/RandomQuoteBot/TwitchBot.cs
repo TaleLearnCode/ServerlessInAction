@@ -48,6 +48,18 @@ namespace RandomQuoteBot
 		}
 
 		/// <summary>
+		/// Sends the supplied <see cref="Quote"/> to the specified Twitch channel.
+		/// </summary>
+		/// <param name="destinationChannel">The Twitch channel to send the <paramref name="quote"/> to.</param>
+		/// <param name="quote">The <see cref="Quote"/> to send to <paramref name="destinationChannel"/>.</param>
+		public void SendQuoteMessage(
+			string destinationChannel,
+			Quote quote)
+		{
+			SendMessage(destinationChannel, $"\"{quote.Text}\" — {quote.Author}");
+		}
+
+		/// <summary>
 		/// Connects to the destination Twitch channel.
 		/// </summary>
 		/// <param name="destinationChannel">Name of the Twitch channel to connect to.</param>

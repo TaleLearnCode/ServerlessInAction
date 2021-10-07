@@ -24,7 +24,7 @@ namespace RandomQuoteBot
 					{
 						s.AddSingleton((s) => { return jsonSerializerOptions; });
 						s.AddSingleton<ITwitchBot>((s) => new TwitchBot(Environment.GetEnvironmentVariable("TwitchChannelName"), Environment.GetEnvironmentVariable("TwitchAccessToken")));
-						s.AddSingleton<ITableServices>((s) => new TableServices(Environment.GetEnvironmentVariable("StorageAccountName"), Environment.GetEnvironmentVariable("StorageAccountKey"), Environment.GetEnvironmentVariable("ChannelTableName"), Environment.GetEnvironmentVariable("QuoteTableName")));
+						s.AddSingleton<ITableServices>((s) => new TableServices(Environment.GetEnvironmentVariable("StorageAccountName"), Environment.GetEnvironmentVariable("StorageAccountKey"), Environment.GetEnvironmentVariable("ChannelTableName"), Environment.GetEnvironmentVariable("QuoteTableName"), Environment.GetEnvironmentVariable("StorageConnectionString"), Environment.GetEnvironmentVariable("QuoteIdContainerName"), jsonSerializerOptions));
 					})
 					.Build();
 

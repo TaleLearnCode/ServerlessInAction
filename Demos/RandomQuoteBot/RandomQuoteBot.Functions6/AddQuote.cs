@@ -62,7 +62,7 @@ namespace RandomQuoteBot
 		private async Task<QuoteId> DeserializeQuoteIdAsync(Stream quoteId, string channelName)
 		{
 
-			QuoteId results = null;
+			QuoteId results;
 			try
 			{
 				string requestBody = await new StreamReader(quoteId).ReadToEndAsync();

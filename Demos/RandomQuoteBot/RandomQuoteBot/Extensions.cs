@@ -1,4 +1,7 @@
-﻿namespace RandomQuoteBot
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace RandomQuoteBot
 {
 	internal static class Extensions
 	{
@@ -12,6 +15,25 @@
 				MessageFrequency = channel.MessageFrequency,
 				LastRandomMessage = channel.LastRandomMessage
 			};
+		}
+
+		internal static Channel ToEntity(this ChannelTableRow channelTableRow)
+		{
+			return new()
+			{
+				ChannelName = channelTableRow.RowKey,
+				MessageFrequency = channelTableRow.MessageFrequency,
+				LastRandomMessage = channelTableRow.LastRandomMessage
+			};
+		}
+
+		internal static List<Channel> ToEntityList(this List<ChannelTableRow> channelTableRows)
+		{
+			List<Channel> channels = new();
+			if (channelTableRows != null && channelTableRows.Any())
+				foreach (ChannelTableRow row in channelTableRows)
+					channels.Add(row.ToEntity());
+			return channels;
 		}
 
 		internal static QuoteTableRow ToTableRow(this Quote quote)
