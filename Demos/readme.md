@@ -4,7 +4,7 @@
 2. [Azure Functions Portal Features](#azure-functions-portal-features)
 3. [Call Azure Function from C# App](#call-azure-function-from-c-app)
 4. [Setup Random Quote Solution](#setup-random-quote-solution)
-
+5. [Random Quote Bot (Add Channel)](#random-quote-bot-add-channel)
 ---
 
 ### Create an Azure Function App in the Portal
@@ -69,7 +69,7 @@ Create a new Console App in Visual Studio and write the following code:
 * Add the TwitchLib NuGet package
 * Copy the interfaces and classes from the pre-built demo project
 
-### Random Quote Bot - Add Channel
+### Random Quote Bot (Add Channel)
 
 * Add an Azure Functions project to the RandomQuoteBot solution named 'RandomQuoteBot.Functions'
 * Delete Function1.cs

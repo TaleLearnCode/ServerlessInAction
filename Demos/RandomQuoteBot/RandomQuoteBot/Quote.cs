@@ -7,9 +7,17 @@
 	public class Quote
 	{
 
-		public string PartitionKey { get; set; }
+		/// <summary>
+		/// Gets or sets the quote identifier.
+		/// </summary>
+		/// <value>A <c>string</c> representing the identiifer of the quote.</value>
+		public string Id { get; set; }
 
-		public string RowKey { get; set; }
+		/// <summary>
+		/// Gets or sets the channel the quote will be served to.
+		/// </summary>
+		/// <value>A <c>string</c> representing the name of the channel the quote is served to.</value>
+		public string Channel { get; set; }
 
 		/// <summary>
 		/// Gets or sets the text of the quote.
