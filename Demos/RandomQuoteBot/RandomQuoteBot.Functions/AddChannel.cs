@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TaleLearnCode;
 
-namespace RandomQuoteBot.Functions
+namespace RandomQuoteBot
 {
 	public class AddChannel
 	{

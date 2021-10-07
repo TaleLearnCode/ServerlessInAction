@@ -67,23 +67,104 @@ Create a new Console App in Visual Studio and write the following code:
 * Create a blank solution called RandomQuoteBot
 * Create a class library project called RandomQuoteBot
 * Add the TwitchLib NuGet package
-* Paste the following files from the source demo project: Channel, ITwitchBot, Quote, TwitchBot
+* Copy the interfaces and classes from the pre-built demo project
 
 ### Random Quote Bot - Add Channel
 
 * Add an Azure Functions project to the RandomQuoteBot solution named 'RandomQuoteBot.Functions'
-* Include a .NET 5 Http triggered function
 * Delete Function1.cs
 * Add a project reference to RandomQuoteBot
+* Add the following NuGet packages: TaleLearnCode
 * Add the following settings to local.settings.json: TwitchChannelName, TwitchAcessToken, StorageConnectionString
-* Add the following to the Main method:
+* Update Program.cs
 
 ~~~
-using Microsoft.Extensions.DepenencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-.ConfigureServices(s =>
+namespace RandomQuoteBot
 {
-	s.AddSingleton<ITwitchBot>((s) => new TwitchBot(Environment.GetEnvironmentVariable("TwitchChannelName"), Environment.GetEnvironmentVariable("TwitchAccessToken")));
-})
+	public class Program
+	{
+		public static void Main()
+		{
+
+			JsonSerializerOptions jsonSerializerOptions = new()
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+				DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
+			};
+
+			var host = new HostBuilder()
+					.ConfigureFunctionsWorkerDefaults()
+					.ConfigureServices(s =>
+					{
+						s.AddSingleton((s) => { return jsonSerializerOptions; });
+						s.AddSingleton<ITwitchBot>((s) => new TwitchBot(Environment.GetEnvironmentVariable("TwitchChannelName"), Environment.GetEnvironmentVariable("TwitchAccessToken")));
+						s.AddSingleton<ITableServices>((s) => new TableServices(Environment.GetEnvironmentVariable("StorageAccountName"), Environment.GetEnvironmentVariable("StorageAccountKey"), Environment.GetEnvironmentVariable("ChannelTableName")));
+					})
+					.Build();
+
+			host.Run();
+		}
+	}
+}
+~~~
+
+* Add HTTP triggred function named AddChannel
+
+~~~
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TaleLearnCode;
+
+namespace RandomQuoteBot
+{
+	public class AddChannel
+	{
+
+		private readonly ITableServices _tableServices;
+		private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+		public AddChannel(
+			ITableServices tableServices,
+			JsonSerializerOptions jsonSerializerOptions)
+		{
+			_tableServices = tableServices;
+			_jsonSerializerOptions = jsonSerializerOptions;
+		}
+
+		[Function("AddChannel")]
+		public async Task<HttpResponseData> Run(
+			[HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "channels/{channelName}")] HttpRequestData request,
+			FunctionContext executionContext,
+			string channelName)
+		{
+
+			ILogger logger = executionContext.GetLogger("AddChannel");
+			logger.LogInformation($"AddChannel: {channelName}");
+
+			try
+			{
+				Channel channel = await request.GetRequestParametersAsync<Channel>(_jsonSerializerOptions);
+				channel.ChannelName = channelName;
+				return request.CreateResponse((HttpStatusCode)_tableServices.AddChannel(channel));
+			}
+			catch (Exception ex)
+			{
+				return request.CreateErrorResponse(ex);
+			}
+
+		}
+	}
+}
 ~~~
