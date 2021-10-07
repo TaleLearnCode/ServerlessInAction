@@ -46,6 +46,14 @@ namespace RandomQuoteBot
 				.ToEntity();
 		}
 
+		public Quote GetQuote(
+			string channelName,
+			int idStartRange,
+			int idEndRange)
+		{
+			return GetQuote(channelName, new Random().Next(idStartRange, idEndRange));
+		}
+
 		private TableClient GetTableClient(string tableName)
 		{
 			return new TableClient(
