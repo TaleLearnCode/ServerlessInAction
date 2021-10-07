@@ -1,5 +1,6 @@
 ﻿using Azure.Data.Tables;
 using System;
+using System.Linq;
 
 namespace RandomQuoteBot
 {
@@ -33,6 +34,16 @@ namespace RandomQuoteBot
 		public int AddQuote(Quote quote)
 		{
 			return GetTableClient(_quoteTableName).UpsertEntity(quote.ToTableRow()).Status;
+		}
+
+		public Quote GetQuote(
+			string channelName,
+			int quoteId)
+		{
+			return GetTableClient(_quoteTableName)
+				.Query<QuoteTableRow>(s => s.PartitionKey == channelName && s.RowKey == quoteId.ToString())
+				.FirstOrDefault()
+				.ToEntity();
 		}
 
 		private TableClient GetTableClient(string tableName)

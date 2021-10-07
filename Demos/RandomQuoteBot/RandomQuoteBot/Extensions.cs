@@ -25,5 +25,16 @@
 			};
 		}
 
+		internal static Quote ToEntity(this QuoteTableRow quoteTableRow)
+		{
+			return new()
+			{
+				Channel = quoteTableRow.PartitionKey,
+				Id = quoteTableRow.RowKey,
+				Author = quoteTableRow.Author,
+				Text = quoteTableRow.Text
+			};
+		}
+
 	}
 }
